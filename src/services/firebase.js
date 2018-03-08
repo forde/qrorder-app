@@ -9,13 +9,10 @@ const config = {
     messagingSenderId: "256903876344"
 };
 
-firebase.initializeApp(config);
+const fb = firebase.initializeApp(config);
 
 export default {
-    addPlace: (placeData) => {
-        const newPlaceKey = firebase.database().ref().child('places').push().key;
-        let update = {};
-        update['/places/' + newPlaceKey] = placeData;
-        return firebase.database().ref().update(update);
+    getPlace: key => {
+        return fb.database().ref('/places/'+key).once('value');
     }
 }
