@@ -8,6 +8,7 @@ export default class ScannerScreen extends React.Component {
         const { params } = navigation.state;
         return {
             header: null,
+            headerBackTitle: 'Skaner',
         }
     }
     

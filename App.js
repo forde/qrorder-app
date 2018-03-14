@@ -4,6 +4,7 @@ import React from 'react';
 import HomeScreen from './src/screens/HomeScreen';
 import ScannerScreen from './src/screens/ScannerScreen';
 import ScanResult from './src/screens/ScanResultScreen';
+import MenuSections from './src/screens/MenuSectionsScreen';
 
 
 const RootStackNavigator = StackNavigator(
@@ -17,6 +18,9 @@ const RootStackNavigator = StackNavigator(
         ScanResult: {
             screen: ScanResult,
         },
+        MenuSections: {
+            screen: MenuSections,
+        }
     },
     {
         //onTransitionEnd: nav => console.log('navigated to:', nav.scene.route.routeName),

@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import { LinearGradient, BlurView } from 'expo';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 import firebase from './../services/firebase';
+import vars from './../vars';
 
 export default class ScanResultScreen extends React.Component {
 
@@ -11,7 +12,7 @@ export default class ScanResultScreen extends React.Component {
         const { params } = navigation.state;
         return {
             title: params && params.placeName ? params.placeName : '...',
-            headerBackTitle: 'Skaner',
+            headerBackTitle: 'Miejsce',
             headerTransparent: true,
             headerBackground: <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill}/>
         }
@@ -53,21 +54,23 @@ export default class ScanResultScreen extends React.Component {
     }
 
     _onMenuButtonPress() {
-
+        this.props.navigation.navigate('MenuSections');
     }
 
     render() {
         const { params } = this.props.navigation.state;
         const { place, placeId, codeId } = this.state;
+        const { height, width } = Dimensions.get('window');
         //console.log(place);
 
         if(!place) return (
-            <View style={styles.container}>
-                <Text>Place not found</Text>
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color={vars.colors.main} />
             </View>
         )
         
         return (
+            <ScrollView contentContainerStyle={{minHeight: height}}>
             <View style={styles.container}>
                 <View style={styles.top}>
                     <View style={styles.imageContainer}>
@@ -105,7 +108,7 @@ export default class ScanResultScreen extends React.Component {
                     <View style={styles.goToMenu}>
                         <Text style={styles.goToMenuText}>Aby złożyć zamówienie wybierz z menu</Text>
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity style={styles.button} onPress={this._onMenuButtonPress}>
+                            <TouchableOpacity style={styles.button} onPress={this._onMenuButtonPress.bind(this)}>
                                 <Text style={styles.buttonText}>zobacz menu</Text>
                             </TouchableOpacity>
                         </View>
@@ -113,11 +116,19 @@ export default class ScanResultScreen extends React.Component {
 
                 </View>
             </View>
+            </ScrollView>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    loaderContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+    },
     container: {
         flex: 1,
         flexDirection: 'column',
@@ -129,7 +140,8 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         flex:1,
-        height: 280,
+        height: 320,
+        backgroundColor: vars.colors.main
     },
     overlay: {
         position: 'absolute',
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     button: {
-        backgroundColor: '#1D1D1B',
+        backgroundColor: vars.colors.main,
         height: 60, 
         flex:1,
         alignItems: 'center', 
