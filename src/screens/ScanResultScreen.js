@@ -1,12 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient, BlurView } from 'expo';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 import firebase from './../services/firebase';
 
 export default class ScanResultScreen extends React.Component {
 
+    static navigationOptions({ navigation }) {
+        const { params } = navigation.state;
+        return {
+            title: params && params.placeName ? params.placeName : '...',
+            headerBackTitle: 'Skaner',
+            headerTransparent: true,
+            headerBackground: <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill}/>
+        }
+    }
+    
     constructor() {
         super();
 
@@ -15,10 +25,6 @@ export default class ScanResultScreen extends React.Component {
             placeId: null,
             codeId: null
         }
-    }
-    
-    static navigationOptions = {
-        title: 'Scan result'
     }
 
     componentWillMount() {
@@ -37,7 +43,11 @@ export default class ScanResultScreen extends React.Component {
                     place: snapshot.val(),
                     placeId: placeId,
                     codeId: codeId
-                }, () => console.log(this.state.place));
+                }, () => {
+                    console.log(this.state.place);
+                    //update the nav bar title
+                    this.props.navigation.setParams({placeName: this.state.place.name});
+                });
             });
         
     }
@@ -49,7 +59,7 @@ export default class ScanResultScreen extends React.Component {
     render() {
         const { params } = this.props.navigation.state;
         const { place, placeId, codeId } = this.state;
-        console.log(place);
+        //console.log(place);
 
         if(!place) return (
             <View style={styles.container}>

@@ -1,11 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 
 export default class ScannerScreen extends React.Component {
     
-    static navigationOptions = {
-        title: 'Scanner'
+    static navigationOptions({ navigation }) {
+        const { params } = navigation.state;
+        return {
+            header: null,
+        }
     }
     
     state = {
@@ -16,10 +19,13 @@ export default class ScannerScreen extends React.Component {
     async componentWillMount() {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({hasCameraPermission: status === 'granted'});
+
+        if(this.props.screenProps.screenIndex === 0)
+            this.setState({ scannerEnabled: true });
     }
 
     componentWillReceiveProps(props) {
-        if(props.screenProps.screenIndex === 1)
+        if(props.screenProps.screenIndex === 0)
             this.setState({ scannerEnabled: true });
     }
 
@@ -48,7 +54,12 @@ export default class ScannerScreen extends React.Component {
                     onBarCodeRead={this._handleBarCodeRead} 
                     barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
                     >
-                        <View style={styles.overlay} />
+                        <View style={styles.overlay}>
+                            <View style={styles.instruction}>
+                                <Image style={{width: 100, height: 88}} source={require('./../images/instruction.png')} />
+                                <Text style={styles.instructionText}>Zeskanuj kod QR</Text>
+                            </View>
+                        </View>
                         <View style={styles.captureBoundsContainer} >
                             <View style={styles.overlay} />
                             <View style={styles.captureBounds}/>
@@ -77,6 +88,19 @@ const styles = StyleSheet.create({
         opacity: .5,
         flex:1
     },
+    instruction: {
+        flex:1,
+        justifyContent: 'flex-end',
+        alignItems: 'center', 
+    },
+    instructionText: {
+        color: '#fff', 
+        fontSize:20, 
+        fontWeight: 'bold',
+        marginBottom: 20,
+        marginTop: 10,
+        textAlign:'center'
+    },
     captureBoundsContainer: {
         flexDirection:'row',
     },
@@ -84,7 +108,7 @@ const styles = StyleSheet.create({
         height: 250,
         width: 250,
         borderWidth: 2,
-        borderColor: '#0088FF',
+        borderColor: '#fff',
         backgroundColor: 'transparent',
     },
 });

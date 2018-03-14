@@ -8,9 +8,9 @@ import ScanResult from './src/screens/ScanResultScreen';
 
 const RootStackNavigator = StackNavigator(
     {
-        Home: {
+        /*Home: {
             screen: HomeScreen,
-        },
+        },*/
         Scanner: {
             screen: ScannerScreen,
         },
