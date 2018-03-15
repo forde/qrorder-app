@@ -2,75 +2,109 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import { LinearGradient, BlurView } from 'expo';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 import firebase from './../services/firebase';
 import vars from './../vars';
 
-export default class ScanResultScreen extends React.Component {
+import { setPlace, setPlaceFetchError } from './../store';
+
+class PlaceScreen extends React.Component {
 
     static navigationOptions({ navigation }) {
         const { params } = navigation.state;
         return {
-            title: params && params.placeName ? params.placeName : '...',
+            //header: null,
+            title: params && params.placeName ? params.placeName : 'Miejsce',
             headerBackTitle: 'Miejsce',
             headerTransparent: true,
             headerBackground: <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill}/>
         }
     }
-    
-    constructor() {
-        super();
 
-        this.state = {
-            place: null,
-            placeId: null,
-            codeId: null
+    componentWillMount() {
+        if(this.props.scanResult && !this.props.place && this.props.screenProps.screenIndex === 1) {
+            console.log('scan result on mount:', this.props.scanResult);
+            this._fetchPlace.bind(this)(this.props.scanResult);
         }
     }
 
-    componentWillMount() {
-        const { params } = this.props.navigation.state;
-        const scanPathParts = params ? params.scan.split('/') : [];
-        let placeId = scanPathParts.length > 2 ? scanPathParts[scanPathParts.length - 2] : null;
-        let codeId = scanPathParts.length > 2 ? scanPathParts[scanPathParts.length - 1] : null;
-              
-        // dev only
-        if(!placeId) placeId = '-L503-GcpjkXZ0lTc3CF';
-        if(!codeId) codeId = '-L503-GgFplpDqkW2Bka';
+    componentWillReceiveProps(props) {
+        if(props.screenProps.screenIndex === 1) {
+            if(props.scanResult && !props.place) {
+                console.log('scan result on props:', props.scanResult, props.placeFetchError);
+                this._fetchPlace.bind(this)(props.scanResult);
+            }
+        }
+    }
 
+    _fetchPlace(keys) {
+        const { placeId, codeId } = keys;
         firebase.getPlace(placeId)
             .then(snapshot => {
-                this.setState({
-                    place: snapshot.val(),
-                    placeId: placeId,
-                    codeId: codeId
-                }, () => {
-                    console.log(this.state.place);
+                //console.log('getPlace then:',snapshot.val());
+                if(snapshot.val()) {
+                    this.props.setPlace(snapshot.val(), placeId, codeId);
                     //update the nav bar title
-                    this.props.navigation.setParams({placeName: this.state.place.name});
-                });
+                    this.props.navigation.setParams({placeName: this.props.place.name});
+                } else {
+                    this.props.setPlaceFetchError(true);
+                }
+            }).catch(e => {
+                //console.log('getPlace catch:',e);
+                this.props.setPlaceFetchError(true);
             });
-        
     }
 
     _onMenuButtonPress() {
-        this.props.navigation.navigate('MenuSections');
+        this.props.navigation.navigate('MenuSections', { 
+            placeId: this.props.place.placeId,
+        });
     }
 
     render() {
-        const { params } = this.props.navigation.state;
-        const { place, placeId, codeId } = this.state;
+        const { place, scanResult, placeFetchError } = this.props;
         const { height, width } = Dimensions.get('window');
-        //console.log(place);
 
-        if(!place) return (
+        if(placeFetchError) return (
+            <View style={styles.loaderContainer}>
+                <Image style={{width: 150, height: 80}} source={require('./../images/brokenCode.png')} />
+                <View style={{flexDirection: 'row',paddingHorizontal: 40, marginBottom:20 }}>
+                    <View style={{borderTopWidth:1, borderColor: vars.colors.main, flex:1, marginTop:-2}} />
+                </View>
+                <Text style={{fontSize: 20, fontWeight: '800', marginBottom: 20 }}>Coś poszło nie tak</Text>
+                <Text style={{textAlign:'center', paddingHorizontal: 40, fontSize:15}}>
+                    Zeskanowany kod nie należy do żadnego z miejsc w naszej bazie danych.
+                </Text>
+                <Text style={{textAlign:'center', paddingHorizontal: 40, paddingVertical: 20, fontSize:15}}>
+                    Upewnij się, że skanowany kod posiada logo QRorder.
+                </Text>
+                <Image style={{width: 200, height: 80}} source={require('./../images/example.png')} />
+            </View>
+        )
+
+        if(!place && !scanResult) return (
+            <View style={styles.loaderContainer}>
+                <Image style={{width: 150, height: 132, marginBottom: 40}} source={require('./../images/instructionDark.png')} />
+                <Text style={{textAlign:'center', paddingHorizontal: 40, fontSize:15}}>
+                    Zeskanuj kod QR aby uzyskać informacje o miejscu w którym się znajdujesz
+                </Text>
+                <View style={{flexDirection: 'row', paddingHorizontal: 40, paddingTop:40}}>
+                    <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('ScannerNavigator')}>
+                        <Text style={styles.buttonText}>przejdź do skanera</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+
+        if(!place && scanResult) return (
             <View style={styles.loaderContainer}>
                 <ActivityIndicator size="large" color={vars.colors.main} />
             </View>
         )
         
         return (
-            <ScrollView contentContainerStyle={{minHeight: height}}>
+            <ScrollView contentContainerStyle={{minHeight: height-65}}>
             <View style={styles.container}>
                 <View style={styles.top}>
                     <View style={styles.imageContainer}>
@@ -85,23 +119,23 @@ export default class ScanResultScreen extends React.Component {
                     <View style={styles.status}>
                         <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 20}}>
                             <View style={{width:50}}>
-                                <MaterialCommunityIcons name="qrcode-scan" size={32} color="#1D1D1B" />
+                                <MaterialCommunityIcons name="qrcode-scan" size={30} color="#1D1D1B" />
                             </View>
-                            <Text style={{fontSize: 16}}>{place.codes[codeId].description}</Text>
+                            <Text style={{fontSize: 16, marginTop:-5}}>{place.codes[place.codeId].description}</Text>
                         </View>
                         {place.acceptingOrders ? (
                             <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 20}}>
                                 <View style={{width:50}}>
-                                    <Ionicons name="md-checkmark-circle" size={38} color="#61AF0A" />
+                                    <Ionicons name="md-checkmark-circle" size={32} color="#61AF0A" />
                                 </View>
-                                <Text style={{fontSize: 16}}>kelner przyjmuje zamówienia</Text>
+                                <Text style={{fontSize: 16, marginTop:-5, flexWrap: 'wrap', paddingRight: 50 }}>lokal przyjmuje zamówienia przez aplikację</Text>
                             </View>
                         ) : (
                             <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 20}}>
                                 <View style={{width:50}}>
-                                    <Ionicons name="md-close-circle" size={38} color="#F55B23" />
+                                    <Ionicons name="md-close-circle" size={32} color="#F55B23" />
                                 </View>
-                                <Text style={{fontSize: 16}}>kelner nie przyjmuje zamówień</Text>
+                                <Text style={{fontSize: 16, marginTop:-5, flexWrap: 'wrap', paddingRight: 50}}>zamówienia przez aplikację nie są obecnie realizowane</Text>
                             </View>
                         )}
                     </View>
@@ -120,6 +154,21 @@ export default class ScanResultScreen extends React.Component {
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        scanResult: state.scanResult,
+        place: state.place,
+        placeFetchError: state.placeFetchError,
+    }
+}
+
+const actions = {
+    setPlace,
+    setPlaceFetchError,
+}
+
+export default connect(mapStateToProps, actions)(PlaceScreen);
 
 const styles = StyleSheet.create({
     loaderContainer: {
@@ -140,7 +189,7 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         flex:1,
-        height: 320,
+        height: 300,
         backgroundColor: vars.colors.main
     },
     overlay: {

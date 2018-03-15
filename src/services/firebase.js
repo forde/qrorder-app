@@ -14,5 +14,8 @@ const fb = firebase.initializeApp(config);
 export default {
     getPlace: key => {
         return fb.database().ref('/places/'+key).once('value');
+    },
+    getPlaceMenu: key => {
+        return fb.database().ref('/placeMenus/'+key).once('value');
     }
 }

@@ -1,12 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
+import { connect } from 'react-redux';
 
-export default class ScannerScreen extends React.Component {
+import { parseScanResult, resetScanResult, resetPlace, setPlaceFetchError } from './../store';
+
+class ScannerScreen extends React.Component {
     
     static navigationOptions({ navigation }) {
         const { params } = navigation.state;
         return {
+            title: 'Skaner',
             header: null,
             headerBackTitle: 'Skaner',
         }
@@ -21,20 +25,31 @@ export default class ScannerScreen extends React.Component {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({hasCameraPermission: status === 'granted'});
 
-        if(this.props.screenProps.screenIndex === 0)
+        if(this.props.screenProps.screenIndex === 0) {
             this.setState({ scannerEnabled: true });
+        }
     }
 
     componentWillReceiveProps(props) {
-        if(props.screenProps.screenIndex === 0)
+        if(props.screenProps.screenIndex === 0) {
             this.setState({ scannerEnabled: true });
+        }
     }
 
     _handleBarCodeRead = ({ type, data }) => {
+        console.log('scaned code:', data);
+
+        this.props.setPlaceFetchError(false);
+        this.props.resetScanResult();
+        this.props.resetPlace();
+
+        this.props.parseScanResult(data);
+
         this.setState({ scannerEnabled: false });
-        this.props.navigation.navigate('ScanResult', { 
+        this.props.navigation.navigate('PlaceNavigator', { 
             scan: data,
         });
+        
     }
 
     render() {
@@ -73,6 +88,15 @@ export default class ScannerScreen extends React.Component {
         }
     }
 }
+
+const actions = {
+    parseScanResult,
+    resetScanResult, 
+    resetPlace,
+    setPlaceFetchError,
+}
+
+export default connect(null, actions)(ScannerScreen);
 
 const styles = StyleSheet.create({
     container: {
