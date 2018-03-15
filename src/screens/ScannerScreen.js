@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import { connect } from 'react-redux';
 
-import { parseScanResult, resetScanResult, resetPlace, setPlaceFetchError } from './../store';
+import { parseScanResult, resetScanResult, resetPlace, setPlaceFetchError, resetCart } from './../store';
 
 class ScannerScreen extends React.Component {
     
@@ -42,6 +42,7 @@ class ScannerScreen extends React.Component {
         this.props.setPlaceFetchError(false);
         this.props.resetScanResult();
         this.props.resetPlace();
+        this.props.resetCart();
 
         this.props.parseScanResult(data);
 
@@ -94,6 +95,7 @@ const actions = {
     resetScanResult, 
     resetPlace,
     setPlaceFetchError,
+    resetCart,
 }
 
 export default connect(null, actions)(ScannerScreen);

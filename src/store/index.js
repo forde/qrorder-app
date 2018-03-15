@@ -83,12 +83,43 @@ export const setPlaceFetchError = val => dispatch => {
 
 /*
 |--------------------------------------------------------------------------
+|  Cart
+|--------------------------------------------------------------------------
+|
+*/
+const cartReducerDefaultState = {
+    items: [],
+}
+const cartReducer = (state = cartReducerDefaultState, action) => {
+    switch(action.type) {
+        case 'ADD_TO_CART': 
+            return {...state, items: [...state.items, action.payload]};
+        case 'RESET_CART': 
+            return cartReducerDefaultState;
+        default :
+            return state;
+    }
+}
+
+export const addToCart = item => dispatch => {
+    dispatch({ type: 'ADD_TO_CART', payload: item });
+}
+
+export const resetCart = () => dispatch => {
+    dispatch({ type: 'RESET_CART', payload: null });
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
 |  STATE
 |--------------------------------------------------------------------------
 |
 */
 export const reducers = combineReducers({
-  scanResult: scanReducer,
-  place: placeReducer,
-  placeFetchError: placeFetchErrorReducer
+    scanResult: scanReducer,
+    place: placeReducer,
+    placeFetchError: placeFetchErrorReducer,
+    cart: cartReducer,
 });

@@ -6,6 +6,7 @@ import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk'; 
 
 import vars from './src/vars';
+import CartIcon from './src/components/CartIcon';
 
 import ScannerScreen from './src/screens/ScannerScreen';
 import PlaceScreen from './src/screens/PlaceScreen';
@@ -68,7 +69,7 @@ const RootTabNavigator = TabNavigator({
         if(routeName === 'PlaceNavigator') 
             return <MaterialIcons name="restaurant" size={28} color={tintColor} />
         if(routeName === 'CartNavigator') 
-            return <MaterialCommunityIcons name="cart-outline" size={30} color={tintColor} />
+            return <CartIcon tintColor={tintColor} />
         if(routeName === 'AccountNavigator') 
             return <MaterialCommunityIcons name="account" size={34} color={tintColor} />
         },

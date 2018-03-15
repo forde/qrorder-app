@@ -29,13 +29,13 @@ export default class MenuSectionsScreen extends React.Component {
                         this.setState({
                             sections: snapshot.val().sections,
                         }, () => {
-                            console.log('Sections: ',this.state.sections);
+                            //console.log('Sections: ',this.state.sections);
                         });
                     } else {
                         this.setState({
                             sections: [],
                         }, () => {
-                            console.log('Sections: ',this.state.sections);
+                            //console.log('Sections: ',this.state.sections);
                         });
                     }
                 });
