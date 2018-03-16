@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavigationActions } from 'react-navigation';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import { connect } from 'react-redux';
@@ -47,9 +48,16 @@ class ScannerScreen extends React.Component {
         this.props.parseScanResult(data);
 
         this.setState({ scannerEnabled: false });
-        this.props.navigation.navigate('PlaceNavigator', { 
-            scan: data,
+        
+        // go to PlaceNavigator tab + reset its tsack to PlaceScreen
+        let resetTabAction = NavigationActions.navigate({
+            routeName: "PlaceNavigator",
+            action: NavigationActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({ routeName: "PlaceScreen" })],
+            }),
         });
+        this.props.navigation.dispatch(resetTabAction);
         
     }
 

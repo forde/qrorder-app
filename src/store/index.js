@@ -93,7 +93,8 @@ const cartReducerDefaultState = {
 const cartReducer = (state = cartReducerDefaultState, action) => {
     switch(action.type) {
         case 'ADD_TO_CART': 
-            return {...state, items: [...state.items, action.payload]};
+
+            return {...state, items: [...state.items, ...action.payload]};
         case 'RESET_CART': 
             return cartReducerDefaultState;
         default :
@@ -101,8 +102,8 @@ const cartReducer = (state = cartReducerDefaultState, action) => {
     }
 }
 
-export const addToCart = item => dispatch => {
-    dispatch({ type: 'ADD_TO_CART', payload: item });
+export const addToCart = items => dispatch => {
+    dispatch({ type: 'ADD_TO_CART', payload: items });
 }
 
 export const resetCart = () => dispatch => {

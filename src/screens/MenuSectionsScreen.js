@@ -21,25 +21,22 @@ export default class MenuSectionsScreen extends React.Component {
     }
 
     componentWillMount() {
+        this.mounted = true;
         const { params } = this.props.navigation.state;
         if(params.placeId) {
             firebase.getPlaceMenu(params.placeId)
                 .then(snapshot => {
                     if(snapshot.val().sections) {
-                        this.setState({
-                            sections: snapshot.val().sections,
-                        }, () => {
-                            //console.log('Sections: ',this.state.sections);
-                        });
+                        if(this.mounted) this.setState({ sections: snapshot.val().sections });
                     } else {
-                        this.setState({
-                            sections: [],
-                        }, () => {
-                            //console.log('Sections: ',this.state.sections);
-                        });
+                        if(this.mounted) this.setState({ sections: [] });
                     }
                 });
         }
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     _keyExtractor(item, index) {
