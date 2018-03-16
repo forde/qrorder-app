@@ -11,6 +11,7 @@ import MenuSections from './screens/MenuSectionsScreen';
 import MenuDishes from './screens/MenuDishesScreen';
 import CartScreen from './screens/CartScreen';
 import AccountScreen from './screens/AccountScreen';
+import SelectPaymentMethodScreen from './screens/SelectPaymentMethodScreen';
 
 
 const ScannerNavigator = StackNavigator({
@@ -25,6 +26,7 @@ const PlaceNavigator = StackNavigator({
 
 const CartNavigator = StackNavigator({
     CartScreen: { screen: CartScreen },
+    SelectPaymentMethodScreen: { screen: SelectPaymentMethodScreen },
 });
 
 const AccountNavigator = StackNavigator({

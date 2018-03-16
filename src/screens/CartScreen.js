@@ -89,7 +89,7 @@ class CartScreen extends React.Component {
     }
 
     _onPlaceOrderPress() {
-
+        this.props.navigation.navigate('SelectPaymentMethodScreen');
     }
 
     render() {

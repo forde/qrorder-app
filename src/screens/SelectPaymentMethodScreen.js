@@ -1,20 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default class AccountScreen extends React.Component {
+class SelectPaymentMethodScreen extends React.Component {
     
     static navigationOptions = {
-        title: 'Konto'
+        title: 'Płatność'
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <Text>Konto</Text>
+                <Text>SelectPaymentMethodScreen</Text>
             </View>
         );
     }
 }
+
+export default SelectPaymentMethodScreen;
 
 const styles = StyleSheet.create({
     container: {
