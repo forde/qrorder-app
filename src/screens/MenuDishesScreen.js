@@ -24,15 +24,15 @@ class MenuDishesScreen extends React.Component {
     }
 
     _keyExtractor(item, index) {
-        return index
+        return item.uuid
     }
 
     _renderItem({item}) {
         return ( 
             <View style={styles.row}>
                 <View style={styles.rowName}>
-                    <Text style={styles.rowNametext}>{item.name}</Text>
-                    <Text style={styles.rowDesctext}>{item.description}</Text>
+                    <Text style={styles.rowNameText}>{item.name}</Text>
+                    <Text style={styles.rowDescText}>{item.description}</Text>
                 </View>
                 {this.props.place.acceptingOrders ? (
                     <TouchableOpacity onPress={() => this._onAddToCartPress.bind(this)(item)} >
@@ -63,10 +63,7 @@ class MenuDishesScreen extends React.Component {
 
     _onAddToOrder() {
         this.setState({ modalVisible: false });
-        const items = [...Array(this.state.modalData.count).keys()].map(slot => ({...this.state.modalData, count: 1}));
-        console.log('ITEMS',items);
-        this.props.addToCart(items);
-        //console.log(this.state.modalData);
+        this.props.addToCart(this.state.modalData);
     }
 
     _onModalDataChange(updatedModalData) {
@@ -127,11 +124,11 @@ const styles = StyleSheet.create({
     rowName: {
         paddingRight:10,
     },
-    rowNametext: {
+    rowNameText: {
         fontSize:18,
         marginBottom: 3,
     },
-    rowDesctext: {
+    rowDescText: {
         color: '#828182',
         fontSize:13,
     },

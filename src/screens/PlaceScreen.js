@@ -85,8 +85,8 @@ class PlaceScreen extends React.Component {
 
         if(!place && !scanResult) return (
             <View style={styles.loaderContainer}>
-                <Image style={{width: 150, height: 132, marginBottom: 40}} source={require('./../images/instructionDark.png')} />
-                <Text style={{textAlign:'center', paddingHorizontal: 40, fontSize:15}}>
+                <Image style={{width: 150, height: 132, marginBottom: 40}} source={require('./../images/instructionGray.png')} />
+                <Text style={{textAlign:'center', paddingHorizontal: 40, fontSize:15, color: vars.colors.gray}}>
                     Zeskanuj kod QR aby uzyskać informacje o miejscu w którym się znajdujesz
                 </Text>
                 <View style={{flexDirection: 'row', paddingHorizontal: 40, paddingTop:40}}>
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        //backgroundColor: '#fff',
     },
     container: {
         flex: 1,

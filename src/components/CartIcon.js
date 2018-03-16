@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 
 class CartIcon extends React.Component {
     render() {
-        console.log('cart icon', this.props.cart);
+        const count = this.props.cart.items.reduce((acc, el) => acc + Number(el.count), 0);
         return (
             <View>
                 <MaterialCommunityIcons name="cart-outline" size={30} color={this.props.tintColor} />
-                {this.props.cart.items[0] && <Text style={styles.badge}>{this.props.cart.items.length}</Text> }
+                {this.props.cart.items[0] && <Text style={styles.badge}>{count}</Text> }
             </View>
         );
     }
@@ -30,11 +30,13 @@ const styles = StyleSheet.create({
         left: -10,
         color: '#fff',
         fontSize:12,
+        lineHeight:12,
         backgroundColor: '#f00',
         height: 20,
         minWidth:20,
         textAlign: 'center',
-        padding: 3,
+        paddingHorizontal: 3,
+        paddingVertical: 5,
         borderRadius: 10,
         overflow:'hidden',
     }

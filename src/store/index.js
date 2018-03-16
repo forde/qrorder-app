@@ -93,10 +93,24 @@ const cartReducerDefaultState = {
 const cartReducer = (state = cartReducerDefaultState, action) => {
     switch(action.type) {
         case 'ADD_TO_CART': 
-
-            return {...state, items: [...state.items, ...action.payload]};
+            if(state.items.filter(el => el.uuid === action.payload.uuid).length > 0) {
+                const updatedItems = state.items.map(el => {
+                    return el.uuid !== action.payload.uuid ? el : {...el, count: Number(el.count) + Number(action.payload.count)}
+                });
+                return {...state, items: updatedItems};
+            } else {
+                return {...state, items: [...state.items, action.payload]};
+            }
         case 'RESET_CART': 
             return cartReducerDefaultState;
+        case 'UPDATE_CART_ITEM':
+            const updatedItems = state.items.map(el => {
+                return el.uuid !== action.payload.uuid ? el : action.payload
+            });
+            return {...state, items: updatedItems};
+        case 'REMOVE_CART_ITEM':
+            const filteredItems = state.items.filter(el => el.uuid !== action.payload.uuid);
+            return {...state, items: filteredItems};
         default :
             return state;
     }
@@ -110,6 +124,13 @@ export const resetCart = () => dispatch => {
     dispatch({ type: 'RESET_CART', payload: null });
 }
 
+export const updateCartItem = item => dispatch => {
+    dispatch({ type: 'UPDATE_CART_ITEM', payload: item });
+}
+
+export const removeCartItem = item => dispatch => {
+    dispatch({ type: 'REMOVE_CART_ITEM', payload: item });
+}
 
 
 /*

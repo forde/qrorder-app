@@ -9,18 +9,18 @@ export default class CartItemPopup extends React.Component {
 
     _countDown(modalData) {
         if(modalData.count > 1) {
-            const updatedModalData = {...modalData, count: modalData.count-1};
+            const updatedModalData = {...modalData, count: Number(modalData.count)-1};
             this.props.onModalDataChange(updatedModalData);
         }     
     }
 
     _countUp(modalData) {
-        const updatedModalData = {...modalData, count: modalData.count+1};
+        const updatedModalData = {...modalData, count: Number(modalData.count)+1};
         this.props.onModalDataChange(updatedModalData);
     }
 
     render() {
-        const { visible, modalData, onAddToOrder, onUpdateOrder, removeFromOrder, onRequestClose } = this.props;
+        const { visible, modalData, onAddToOrder, onUpdateOrder, onRemoveFromOrder, onRequestClose } = this.props;
 
         if(!visible) return <View />
 
@@ -55,9 +55,9 @@ export default class CartItemPopup extends React.Component {
                                 </TouchableOpacity>
                             </View>
                         }
-                        {removeFromOrder &&
+                        {onRemoveFromOrder &&
                             <View style={{flexDirection:'row'}}>
-                                <TouchableOpacity style={styles.popupRemoveBtn} onPress={() => removeFromOrder() }>
+                                <TouchableOpacity style={styles.popupRemoveBtn} onPress={() => onRemoveFromOrder() }>
                                     <Text style={styles.popupRemoveBtnText}>usuń z zamówienia</Text>
                                 </TouchableOpacity>
                             </View>
@@ -76,7 +76,7 @@ export default class CartItemPopup extends React.Component {
 
 const styles = StyleSheet.create({
     modalOverlay: {
-        backgroundColor: 'rgba(0,0,0,.85)',
+        backgroundColor: 'rgba(0,0,0,.9)',
         flex:1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -157,18 +157,18 @@ const styles = StyleSheet.create({
     },
     popupRemoveBtn: {
         borderWidth:1,
-        borderColor:'#f00',
+        borderColor:'#EE3333',
         height: 60,
         justifyContent: 'center',
         borderRadius: 30,
         overflow: 'hidden',
-        backgroundColor: 'rgba(255,142,156,.1)',
+        backgroundColor: 'rgba(238,51,51,.1)',
         flex:1,
         marginBottom: 25,
     },
     popupRemoveBtnText: {
         fontSize:20,
-        color:'#f00',
+        color:'#EE3333',
         textAlign:'center',
     },
     popupCancelText: {

@@ -82,6 +82,7 @@ const RootTabNavigator = TabNavigator({
             height:65
         },
     },
+    tabBarComponent: TabBarBottom,
     tabBarPosition: 'bottom',
     animationEnabled: true,
     swipeEnabled: false,
