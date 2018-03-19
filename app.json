@@ -1,8 +1,18 @@
 {
   "expo": {
     "sdkVersion": "25.0.0",
+    "name": "QR Order",
+    "icon": "./app-icon.png",
+    "version": "1.0.0",
+    "slug": "qrorder",
+    "ios": {
+      "bundleIdentifier": "pl.qrorder.qrorder"
+    },
+    "android": {
+      "package": "pl.qrorder.qrorder"
+    },
     "facebookScheme": "fb179689162754620",
     "facebookAppId" : "179689162754620",
-    "facebookDisplayName" : "QRorder"
+    "facebookDisplayName" : "QR Order"
   }
 }

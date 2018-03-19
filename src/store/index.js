@@ -133,6 +133,31 @@ export const removeCartItem = item => dispatch => {
 }
 
 
+
+/*
+|--------------------------------------------------------------------------
+|  user
+|--------------------------------------------------------------------------
+|
+*/
+const userReducer = (state = null, action) => {
+    switch(action.type) {
+        case 'SET_USER': 
+            return action.payload;
+        default :
+            return state;
+    }
+}
+
+// action SET_USER is being dispatched fro componentWillMount() on App.js trough Firebase onAuthStateChanged()
+/*export const setUser = user => dispatch => {
+    console.log('set user action called with',user);
+    dispatch({ type: 'SET_USER', payload: user });
+}*/
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 |  STATE
@@ -144,4 +169,5 @@ export const reducers = combineReducers({
     place: placeReducer,
     placeFetchError: placeFetchErrorReducer,
     cart: cartReducer,
+    user: userReducer,
 });

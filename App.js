@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk'; 
+import * as firebase from 'firebase';
 
 import Navigator from './src/Navigator';
 
@@ -12,6 +13,12 @@ export default class App extends React.Component {
 
     state = {
         screenIndex: 0
+    }
+
+    componentWillMount() {
+        firebase.auth().onAuthStateChanged((user) => {
+            store.dispatch({ type: 'SET_USER', payload: user })
+        });
     }
 
     _onNavigationStateChange(prevState, newState, action) {
